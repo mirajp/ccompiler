@@ -1,0 +1,26 @@
+.data
+                                                                                                                               
+
+main:
+	a	= MOV $1
+	a	= ADD a, $1
+	b	= MOV $2
+	b	= SUB b, $1
+	c	= ADD a, b
+	%T1	= ADD c, a
+	c	= ADD %T1, b
+	%T2	= MUL c, a
+	d	= ADD %T2, b
+	%T3	= MUL b, c
+	e	= ADD a, %T3
+	ARGBEGIN 1
+	ARG a
+	%T4 = CALL g
+	ARGBEGIN 1
+	ARG "Hi"
+	%T5 = CALL printf
+	%T6 = CALL f
+	%T7 = CALL g
+	RETURN $0
+
+

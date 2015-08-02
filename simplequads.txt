@@ -1,0 +1,13 @@
+                                 
+
+main:
+	x = MOV $50
+	x = ADD x, $10
+	ARGBEGIN 2
+	ARG "hello: %d\n"
+	ARG $10
+	%T1 = CALL printf
+	%T2 = CALL f
+	RETURN 
+
+
