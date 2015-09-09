@@ -1,0 +1,19 @@
+                                           
+main:
+	%T1 = MOV $0
+BB1:
+	CMP %T1, $10
+	BRGE BB3
+BB2:
+	ARGBEGIN 1
+	ARG "Hi!\n"
+	%T2 = CALL printf
+	ARGBEGIN 2
+	ARG "i = %d\n"
+	ARG %T1
+	%T3 = CALL printf
+	%T1 = ADD %T1, $1
+	JMP BB1
+BB3:
+	RETURN 
+

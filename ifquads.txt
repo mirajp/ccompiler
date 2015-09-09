@@ -1,0 +1,29 @@
+                                                                                                     
+main:
+	%T1 = MOV $0
+	CMP %T1, $10
+	BRGE BB2
+BB1:
+	ARGBEGIN 1
+	ARG "Hi!\n"
+	%T2 = CALL printf
+	ARGBEGIN 2
+	ARG "i = %d which is less than 10!\n"
+	ARG %T1
+	%T3 = CALL printf
+	%T1 = MOV $10
+BB2:
+	CMP %T1, $10
+	BRGE BB4
+BB3:
+	ARGBEGIN 2
+	ARG "i = %d, which is still less than 10!\n"
+	ARG %T1
+	%T4 = CALL printf
+BB4:
+	ARGBEGIN 2
+	ARG "Aww, i = %d is no longer less than 10 =(\n"
+	ARG %T1
+	%T5 = CALL printf
+	RETURN 
+

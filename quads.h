@@ -13,6 +13,8 @@ enum QUAD_OPS {
     BRGT_OP,
     BRGE_OP,
     BREQ_OP,
+    BRNQ_OP,
+    JMP_OP,
     CALL_OP,
     CMP_OP,
     DIV_OP,
@@ -28,7 +30,6 @@ enum QUAD_OPS {
     SHL_OP,
     SHR_OP,
     XOR_OP,
-    BLOCK_OP
 };
 
 struct quad {
@@ -65,21 +66,23 @@ struct quadBlockList *new_quadBlockList();
 
 void insert_block(struct quadBlock *block, struct quadBlockList *blockList);
 
-void *genQuads_assignment(struct astNode *node);
+void genQuads_assignment(struct astNode *node);
 
-void *genQuads_ifstmt(struct astNode *node);
+void genQuads_ifstmt(struct astNode *node);
 
-void *genQuads_condition(struct astNode *node);
+void genQuads_condition(struct astNode *node);
 
 void genQuads_function(struct astNode *start);
 
 void genQuads_statement(struct astNode *node, struct quadBlockList *blockList);
 
-void *genQuads_fncall(struct astNode *node);
+void genQuads_fncall(struct astNode *node);
 
-void *genQuads_forloop(struct astNode *node);
+void genQuads_forloop(struct astNode *node);
 
-void *genQuads_returnstmt(struct astNode *node);
+void genQuads_whileloop(struct astNode *node);
+
+void genQuads_returnstmt(struct astNode *node);
 
 void printQuadList(struct quadBlockList *blockList);
 

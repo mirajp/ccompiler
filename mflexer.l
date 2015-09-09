@@ -179,8 +179,8 @@ _Imaginary	{return _IMAGINARY;}
 "--"		{return MINUSMINUS;}
 "<<"        {return SHL;}
 ">>"        {return SHR;}
-"<="        {return GTEQ;}
-">="        {return LTEQ;}
+"<="        {return LTEQ;}
+">="        {return GTEQ;}
 "=="        {return EQEQ;}
 "!="        {return NOTEQ;}
 "&&"        {return LOGAND;}

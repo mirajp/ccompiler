@@ -92,7 +92,7 @@ function-definition
                                     $$ = $4;
                                     //fprintf(stderr, "Debugging for function '%s'\n", $1->left->attributes.identname);
                                     //print_AST($4);
-                                    printf("\n\n%s:\n",$1->left->attributes.identname );
+                                    printf("\n%s:\n",$1->left->attributes.identname );
                                     genQuads_function($4);
                                 }
 	;
@@ -406,7 +406,7 @@ additive-expression
                                                                 $$ = node;
                                                             }
     | additive-expression '-' multiplicative-expression     { struct astNode *node = new_astNode(AST_BINOP);
-                                                                node->attributes.op = '+';
+                                                                node->attributes.op = '-';
                                                                 node->left = $1;
                                                                 node->right = $3;
                                                                 strcpy(node->filename, filename);
@@ -924,7 +924,7 @@ direct-declarator
                                                             node->attributes.linenum = linenum;
                                                             node->attributes.varNum = 0;
                                                             node->attributes.identname = strdup($1);
-                                                            strcpy(node->filename, filename);
+															strcpy(node->filename, filename);
                                                             int ret = insertSymbol(currTable, $1, node);
                                                             if (ret == 1) {
                                                                 // Symbol already exists
@@ -1275,6 +1275,7 @@ iteration-statement
                                                                             node->initCondition = $3;
                                                                             node->condition = $5;
                                                                             node->loopCondition = $7;
+																			node->if_true = $9;
                                                                             strcpy(node->filename, filename);
                                                                             $$ = node;
                                                                         }

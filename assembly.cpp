@@ -61,9 +61,10 @@ void process(istream &in) {
             stringstream number(lineread.substr(lineread.find(" ", lineread.find("ARGBEGIN"))+1, lineread.length()-1-(lineread.find(" ", lineread.find("ARGBEGIN")))));
             number >> numArgs;
             ostringstream allocsize;
-            allocsize << ((numArgs+1)*4);
+            allocsize << ((numArgs)*4);
             code.push_back("\tsubl $" + allocsize.str() + ", %esp\n");
-            for (int i = argCount; i < numArgs + argCount; i++) {
+            //for (int i = argCount; i < numArgs + argCount; i++) {
+            for (int i = 0; i < numArgs; i++) {
                 stringstream argoffset;
                 getline(in, lineread);
                 code.push_back("# " + lineread);
@@ -79,16 +80,32 @@ void process(istream &in) {
             }
             
             argCount += numArgs;
+
+            getline(in, lineread);
+            code.push_back("# " + lineread);
+            string fnCall = lineread.substr(lineread.find(" ", lineread.find("CALL"))+1, lineread.length()-(lineread.find(" ", lineread.find("CALL")))-1);
+            code.push_back("\tcall " + fnCall);
+            
+            stringstream offsetMem(tempregLocation(lineread));
+            code.push_back("\tmovl %eax, " + offsetMem.str());
+            code.push_back("\taddl $" + allocsize.str() + ", %esp\n");
         }
         
         // If it contains a ':' and is not prefixed with a period, means function label
-        else if (lineread[lineread.length()-1] == ':' && lineread[0] != '.') {
+        else if (lineread[lineread.length()-1] == ':' && lineread.find("BB") == string::npos) {
             code.push_back(".text");
             code.push_back(".global " + lineread.substr(0, lineread.length()-1));
             code.push_back("");
             code.push_back(lineread);
             code.push_back("\tpushl %ebp");
-            code.push_back("\tmovl %esp, %ebp\n");
+            code.push_back("\tmovl %esp, %ebp");
+            getline(in, lineread);
+            string stackSize = lineread.substr(lineread.find(":")+2, lineread.length());
+            code.push_back("\tsubl $" + stackSize + ", %esp\n");
+        }
+        
+        else if (lineread[lineread.length()-1] == ':' && lineread.find("BB") != string::npos) {
+            code.push_back(lineread);
         }
 
         else if (lineread.find("RETURN") != string::npos) {
@@ -107,15 +124,6 @@ void process(istream &in) {
             //code.push_back("\n# " + lineread);
             string fnCall = lineread.substr(lineread.find(" ", lineread.find("CALL"))+1, lineread.length()-(lineread.find(" ", lineread.find("CALL")))-1);
             code.push_back("\tcall " + fnCall);
-            
-            /*
-            int start = lineread.find("%T")+2;
-            int end = lineread.find(" =");
-            stringstream offset(lineread.substr(start, end - start));
-            offset >> offsetNum;
-            stringstream offsetMem;
-            offsetMem << ((offsetNum)*(-4));
-            */
             
             stringstream offsetMem(tempregLocation(lineread));
             code.push_back("\tmovl %eax, " + offsetMem.str() + "\n");
@@ -137,7 +145,74 @@ void process(istream &in) {
             code.push_back("\tmovl %eax, " + destination + "\n");
         }
         
-        else if (lineread.find("ADD") != string::npos) {
+        else if (lineread.find("CMP") != string::npos) {
+            int start = lineread.find(" ", lineread.find("CMP"))+1;
+            int end = lineread.find(",");
+            string argumentA = lineread.substr(start, end-start);
+            if (argumentA.find("%T") != string::npos) {
+                argumentA = tempregLocation(argumentA);
+            }
+            start = end+2;
+            end = lineread.length();
+            string argumentB = lineread.substr(start, end-start);
+            if (argumentB.find("%T") != string::npos) {
+                argumentB = tempregLocation(argumentB);
+            }
+            code.push_back("\tmovl " + argumentA + ", %eax");
+            //code.push_back("\tcmpl " + argumentA + ", " + argumentB);
+            code.push_back("\tcmpl " + argumentB + ", %eax");
+        }
+        
+        else if (lineread.find("BRNE") != string::npos) {
+            int start = lineread.find(" ", lineread.find("BRNE"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tjne " + argument);
+        }
+        
+        else if (lineread.find("BREQ") != string::npos) {
+            int start = lineread.find(" ", lineread.find("BREQ"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tje " + argument);
+        }
+        
+        else if (lineread.find("BRGE") != string::npos) {
+            int start = lineread.find(" ", lineread.find("BRGE"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tjge " + argument);
+        }
+        
+        else if (lineread.find("BRGT") != string::npos) {
+            int start = lineread.find(" ", lineread.find("BRGT"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tjg " + argument);
+        }
+        
+        else if (lineread.find("BRLE") != string::npos) {
+            int start = lineread.find(" ", lineread.find("BRLE"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tjle " + argument);
+        }
+        
+        else if (lineread.find("BRLT") != string::npos) {
+            int start = lineread.find(" ", lineread.find("BRLT"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tjl " + argument);
+        }
+        
+        else if (lineread.find("JMP") != string::npos) {
+            int start = lineread.find(" ", lineread.find("JMP"))+1;
+            int end = lineread.length();
+            string argument = lineread.substr(start, end-start);
+            code.push_back("\tjmp " + argument);
+        }
+        
+        else if (lineread.find("ADD") != string::npos || lineread.find("SUB") != string::npos || lineread.find("MUL") != string::npos || lineread.find("DIV") != string::npos) {
             int start = lineread.find(" ", lineread.find("ADD"))+1;
             int end = lineread.find(",");
             string argumentA = lineread.substr(start, end-start);
@@ -160,21 +235,31 @@ void process(istream &in) {
             //cout << "Destination = " << destination << "." << endl;
             
             //# %T18 = ADD %T17,%T19
-            code.push_back("\tmovl " + argumentA + ", %eax");
-            code.push_back("\tmovl " + argumentB + ", %edx");
-            code.push_back("\taddl %eax, %edx");
-            code.push_back("\tmovl %edx, " + destination + "\n");
-            
-        }
-        
-        else if (lineread.find("SUB") != string::npos) {
-            
-        }
-        
-        else if (lineread.find("MUL") != string::npos) {
-        }
-        
-        else if (lineread.find("DIV") != string::npos) {
+            if (lineread.find("ADD") != string::npos) {
+                code.push_back("\tmovl " + argumentA + ", %eax");
+                code.push_back("\tmovl " + argumentB + ", %edx");
+                code.push_back("\tadd %eax, %edx");
+                code.push_back("\tmovl %edx, " + destination + "\n");
+            }
+            else if (lineread.find("SUB") != string::npos) {
+                code.push_back("\tmovl " + argumentA + ", %eax");
+                code.push_back("\tmovl " + argumentB + ", %edx");
+                code.push_back("\tsub %edx, %eax");
+                code.push_back("\tmovl %eax, " + destination + "\n");
+            }
+            else if (lineread.find("MUL") != string::npos) {
+                code.push_back("\tmovl " + argumentA + ", %eax");
+                code.push_back("\tmovl " + argumentB + ", %edx");
+                code.push_back("\timul %eax, %edx");
+                code.push_back("\tmovl %edx, " + destination + "\n");
+            }
+            else if (lineread.find("DIV") != string::npos) {
+                code.push_back("\tmovl $0, %edx");
+                code.push_back("\tmovl " + argumentA + ", %eax");
+                code.push_back("\tmovl " + argumentB + ", %ecx");
+                code.push_back("\tidivl %ecx");
+                code.push_back("\tmovl %eax, " + destination + "\n");
+            }
             
         }
     }

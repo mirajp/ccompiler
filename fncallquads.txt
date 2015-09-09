@@ -1,0 +1,21 @@
+ 				
+main:
+	ARGBEGIN 1
+	ARG "Inside main\n"
+	%T1 = CALL printf
+	%T2 = CALL f
+	ARGBEGIN 1
+	ARG "Exiting main.\n"
+	%T3 = CALL printf
+	RETURN 
+
+ 			
+f:
+	ARGBEGIN 1
+	ARG "Inside local function 'f'\n"
+	%T4 = CALL printf
+	ARGBEGIN 1
+	ARG "Exiting local function 'f'\n"
+	%T5 = CALL printf
+	RETURN 
+

@@ -30,7 +30,8 @@ enum AST_TYPE {
     AST_FOR,
     AST_WHILE,
     AST_DO = 20,
-    AST_SWITCH   
+    AST_SWITCH,
+	AST_LABEL
 };
 
 enum KW_TYPE {

@@ -1,13 +1,30 @@
-                                 
-
+                                                                 
 main:
-	x = MOV $50
-	x = ADD x, $10
+Alloc: 20
+	%T1 = MOV $50
+	%T1 = ADD %T1, $10
+	%T1 = MOV %T1
 	ARGBEGIN 2
-	ARG "hello: %d\n"
-	ARG $10
-	%T1 = CALL printf
-	%T2 = CALL f
+	ARG "hello: x = 50, now x + 10 = %d\n"
+	ARG %T1
+	%T2 = CALL printf
+	%T1 = MUL %T1, $2
+	%T1 = MOV %T1
+	ARGBEGIN 2
+	ARG "Now x*2 = %d\n"
+	ARG %T1
+	%T3 = CALL printf
+	%T1 = DIV %T1, $2
+	%T1 = MOV %T1
+	ARGBEGIN 2
+	ARG "Now x/2 = %d\n"
+	ARG %T1
+	%T4 = CALL printf
+	%T1 = SUB %T1, $2
+	%T1 = MOV %T1
+	ARGBEGIN 2
+	ARG "Now x-2 = %d\n"
+	ARG %T1
+	%T5 = CALL printf
 	RETURN 
-
 
