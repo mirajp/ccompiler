@@ -1,29 +1,4 @@
 # README #
-
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+ECE 466: Compilers
+Course description:
+The theory, design and implementation of a practical compiler. Finite automata, LL and LR parsing, attribute grammars, syntax-directed translation, symbol tables and scopes, type systems and representations, abstract syntax trees, intermediate representation, basic blocks, data and control flow optimizations, assembly language generation including register and instruction selection. Students apply tools such as Flex and Bison to writing a functional compiler for a subset of a real programming language such as C.
