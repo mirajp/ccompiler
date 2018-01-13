@@ -33,7 +33,7 @@ Ensure you are running a 32-bit Linux distro with an Intel CPU. The generated as
 2. Generate intermediate representation (quads) for simple C programs (with loops, conditional statements, or function calls), and save them in a textfile by redirecting the output
 
     <code>
-    ./miragecompiler.out < simpleprog.c [> simplequads.txt]
+    ./miragecompiler.out < simpleprog.c > simplequads.txt
     </code>
 
 3. Use the assembly generator (genassembly.out) to create 32-bit assembly instructions
